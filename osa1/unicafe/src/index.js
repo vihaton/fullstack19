@@ -1,72 +1,48 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Header = (props) => {
+
+const Button = ({ handleClick, text }) => {
     return (
-        <div>
-            <h1>{props.course}</h1>
-        </div>
+        <button onClick={handleClick}>
+            {text}
+        </button>
     )
 }
 
-const Part = (props) => {
-    return (
-        <div>
-            <p>
-                {props.part.name} {props.part.exercises}
-            </p>
-        </div>
+const Display = ({text, value}) => (<div>
+    <p>{text} {value}</p>
+    </div>
     )
-}
-
-const Content = (props) => {
-    return (
-        <div>
-            <Part part={props.parts[0]} />
-            <Part part={props.parts[1]} />
-            <Part part={props.parts[2]} />
-        </div>
-    )
-}
-
-const Total = (props) => {
-    return (
-        <div>
-            <p>yhteensä {props.parts[0].exercises + 
-                props.parts[1].exercises + 
-                props.parts[2].exercises} tehtävää</p>
-        </div>
-    )
-}
 
 const App = () => {
-    const course = {
-        name: 'Half Stack -sovelluskehitys',
-        parts: [
-          {
-            name: 'Reactin perusteet',
-            exercises: 10
-          },
-          {
-            name: 'Tiedonvälitys propseilla',
-            exercises: 7
-          },
-          {
-            name: 'Komponenttien tila',
-            exercises: 14
-          }
-        ]
-    }
-  
+  // tallenna napit omaan tilaansa
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
 
+  
   return (
     <div>
-      <Header course={course.name} />
-      <Content parts={course.parts}/>
-      <Total parts={course.parts} />
+        <h1>anna palautetta</h1>
+        <Button handleClick={() => setGood(good + 1)}
+            text="hyvä"
+        />
+        <Button handleClick={() => setNeutral(neutral + 1)}
+            text="neutraali"
+        />
+        <Button handleClick={() => setBad(bad + 1)}
+            text="huono"
+        />
+        <h1>statistiikka</h1>
+        <Display text="hyvä" value={good}/>
+        <Display text="neutraali" value={neutral}/>
+        <Display text="huono" value={bad}/>
     </div>
   )
 
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<App />, 
+  document.getElementById('root')
+)
