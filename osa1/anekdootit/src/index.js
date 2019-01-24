@@ -1,14 +1,50 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const App = (props) => {
-  const [selected, setSelected] = useState(0)
+const Button = ({ handleClick, text}) => {
+    return (
+        <button onClick={handleClick}>
+            {text}
+        </button>
+    )
+}
 
-  return (
+const Display = ({text, value, after}) => (
     <div>
-      {props.anecdotes[selected]}
+        {text} {value} {after}
     </div>
-  )
+)
+
+const App = (props) => {
+    const [selected, setSelected] = useState(0)
+    let [votes, setVotes] = useState(0)
+    const count = props.anecdotes.length
+    if (votes === 0) { //inits only once
+        console.log("init votes")
+        votes = new Uint8Array(count)
+    }
+    console.log(votes)
+
+    const nextRnd = () => Math.floor(Math.random() * count)
+    const vote = (ind) => {
+        console.log("voted ", ind)
+        let c = [...votes]
+        c[ind] += 1
+        setVotes(c)
+        setSelected(nextRnd())
+    }
+
+    return (
+        <div>
+            <h1>Anecdote of the day</h1>
+            <p>{props.anecdotes[selected]}</p>
+            <Display text="has " value={0} after="votes" />
+            <Button handleClick={() => vote(selected)} text="vote" />
+            <Button handleClick={() => setSelected(nextRnd())} text="next anecdote" />
+            <h1>Anecdote with the most votes</h1>
+            <p>{props.anecdotes[votes.indexOf(Math.max(...votes))]}</p>
+        </div>
+    )
 }
 
 const anecdotes = [
