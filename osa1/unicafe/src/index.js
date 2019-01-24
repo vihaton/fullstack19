@@ -11,7 +11,12 @@ const Button = ({ handleClick, text }) => {
 }
 
 const Display = ({text, value, after}) => (
-    <div>{text} {value} {after}</div>
+    <tbody>
+        <tr>
+            <td>{text}</td>
+            <td>{value} {after}</td>
+        </tr>   
+    </tbody>
     )
 
 const Statistics = ({good, neutral, bad}) => {
@@ -19,19 +24,29 @@ const Statistics = ({good, neutral, bad}) => {
     let ave=0
     let pos=0
     if (count > 0) {
-      ave=(good - bad) / count
-      pos=good / count
+        ave=(good - bad) / count
+        pos=good / count
+    } else {
+        return (
+            <div>
+                <h1>statistiikka</h1>
+                Ei yhtään palautetta annettu
+            </div>
+        )
     }
 
     return (
         <div>
             <h1>statistiikka</h1>
-            <Display text="hyvä" value={good}/>
-            <Display text="neutraali" value={neutral}/>
-            <Display text="huono" value={bad}/>
-            <Display text="yhteensä" value={count}/>
-            <Display text="keskiarvo" value={ave}/>
-            <Display text="positiivisia" value={pos} after="%"/>
+            <table>
+                <Display text="hyvä" value={good}/>
+                <Display text="neutraali" value={neutral}/>
+                <Display text="huono" value={bad}/>
+                <Display text="yhteensä" value={count}/>
+                <Display text="keskiarvo" value={ave}/>
+                <Display text="positiivisia" value={pos} after="%"/>
+
+            </table>
         </div>
     )
 }
