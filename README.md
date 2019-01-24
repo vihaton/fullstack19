@@ -5,3 +5,6 @@ https://fullstack-hy2019.github.io
 root  
 * osa 0
 * osa 1
+  * 1.1-1.5
+  * unicafe
+  * anekdootit
