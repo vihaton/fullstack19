@@ -7,12 +7,18 @@ const Person = ({person}) => {
 }
 
 const App = () => {
-  const [ persons, setPersons] = useState([
-    { name: 'Arto Hellas',
-      number: '050123432'}
-  ]) 
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Martti Tienari', number: '040-123456' },
+    { name: 'Arto Järvinen', number: '040-123456' },
+    { name: 'Lea Kutvonen', number: '040-123456' }
+  ])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
+  const [showAll, setShowAll] = useState(true)
+  const [ newFilter, setNewFilter] = useState('')
+
+  const entriesToShow = persons.filter(p => p.name.toUpperCase().includes(newFilter.toUpperCase()))
 
   const addEntry = (event) => {
     event.preventDefault()
@@ -43,7 +49,9 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
-  const rows = () => persons.map(p =>
+  const handleFilterChange = (event) => setNewFilter(event.target.value)
+
+  const rows = () => entriesToShow.map(p =>
     <Person
       key={p.name}
       person={p}
@@ -53,6 +61,13 @@ const App = () => {
   return (
     <div>
       <h2>Puhelinluettelo</h2>
+      <div>
+          rajaa näytettäviä: <input 
+            value={newFilter}
+            onChange={handleFilterChange}
+            />
+        </div>
+      <h2>lisää uusi</h2>
       <form onSubmit={addEntry}>
         <div>
           nimi: <input 
