@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-
-//https://restcountries.eu/rest/v2/all
+import Results from "./Results"
 
 const Filter = (props) => {
   console.log('render filter', props);
@@ -17,86 +16,41 @@ const Filter = (props) => {
   )
 }
 
-const Button = ({handleClick, c }) => {
-  return (
-      <button onClick={() => handleClick(c)}>
-          show
-      </button>
-  )
-}
-
-const Result = ({c, handleClick}) => {
-  console.log('one result', c);
-  return (
-    <div>
-      <p>{c.name}
-      <Button c={c} handleClick={handleClick}/>
-      </p>
-    </div>
-  )
-}
-
-const Country = ({c}) => {
-  console.log('Show the country', c);
-
-  const langs = () => c.languages.map(l => <li key={l.name}>{l.name}</li>)
-
-  return (
-    <div>
-      <h1>{c.name}</h1>
-      capital {c.capital} <br/>
-      population {c.population}
-      <h2>languages</h2>
-      <ul>
-        {langs()}
-      </ul>
-      <img src={c.flag} style={{
-        flex: 1,
-        width: 250,
-        height: null,
-        resizeMode: 'contain' }}/>
-    </div>
-  )
-}
-
-const Results = (props) => {
-  console.log('update results', props);
-  if (props.c.length > 10) {
-    return <div>Too many matches, specify another filter PLEASE</div>
-  } else if (props.c.length === 1) {
-    return <Country c={props.c[0]} />
-  } else if (props.showOne != null) {
-    return <Country c={props.showOne} />
-  }
-
-  const rows = () => 
-    props.c.map(c => 
-      <Result key={c.name}
-      c={c} handleClick={props.handleClick}/>
-    )
-
-  return (
-    <div>
-      {rows()}
-    </div>
-  )
-  
-}
-
 const App = () => {
   //--- states ---
   const [countries, setCountries] = useState([])
   const [newFilter, setNewFilter] = useState('')
   const [showOne, setShowOne] = useState(null)
   const [apikey, setApikey] = useState(apikey)
+  const [weather, setWeather] = useState({})
 
   const countriesToShow = countries.filter(c => c.name.toUpperCase().includes(newFilter.toUpperCase()))
 
+  //weather info if we know which city to fetch it for...
+  let city = ""
+  if (countriesToShow.length === 1) {
+    console.log('we are interested about (by filter):', countriesToShow[0].capital);
+    city = countriesToShow[0].capital
+  } else if (showOne != null) {
+    console.log('we chose to see ', showOne.capital);
+    city = showOne.capital
+  } 
+  
+  //...and it's not fetched already
+  if (city != "" && !weather[city]) {
+    console.log('fetch weather data with apikey', apikey)
+    axios
+    .get(`https://api.apixu.com/v1/current.json?key=${apikey}&q=${city}`).then(response => {
+      console.log(response);
+      weather[city] = response.data
+      setWeather(weather)
+    })
+  }
   //--- hooks ---
 
   //country data
   useEffect(() => {
-    console.log('effect')
+    console.log('fetch country data')
     axios
       .get('https://restcountries.eu/rest/v2/all').then(response => {
       //.get('http://localhost:3001/countries').then(response => {
@@ -111,12 +65,10 @@ const App = () => {
     console.log('fetch apikey')
     axios
       .get('http://localhost:3002/keys').then(response => {
-        console.log('promise fulfilled')
         console.log(response);
         setApikey(response.data[0]["apixu"])
       })
   }, [])
-
 
   //--- event handlers ---
   const handleFilterChange = (event) => {
@@ -138,7 +90,8 @@ const App = () => {
       
       <Results c={countriesToShow} 
         handleClick={(c) => handleClick(c)}
-        showOne={showOne} />
+        showOne={showOne}
+        weather={weather} />
     </div>
   )
 }
