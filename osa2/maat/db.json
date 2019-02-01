@@ -1,19 +1,23 @@
 {
-  "posts": [
-    {
-      "id": 1,
-      "title": "json-server",
-      "author": "typicode"
+  "countries" : [
+    {"name": "Afghanistan", 
+       "alpha2Code": "AF", 
+       "alpha3Code": "AFG", 
+       "area": 652230,
+       "borders": ["IRN", "PAK", "TKM", "UZB", "TJK", "CHN"],
+       "callingCodes": ["93"],
+       "capital": "Kabul",
+       "cioc": "AFG",
+       "languages": ["asdf", "Suomi", "tämä"],
+       "flag": "https://restcountries.eu/data/afg.svg",
+       "gini": 27.8,
+       "nativeName": "افغانستان",
+       "numericCode": "004",
+       "population": 27657145,
+       "region": "Asia",
+       "subregion": "Southern Asia",
+       "timezones": ["UTC+04:30"],
+       "topLevelDomain": [".af"]
     }
-  ],
-  "comments": [
-    {
-      "id": 1,
-      "body": "some comment",
-      "postId": 1
-    }
-  ],
-  "profile": {
-    "name": "typicode"
-  }
+  ]
 }
