@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import { POINT_CONVERSION_COMPRESSED } from 'constants';
 
 //https://restcountries.eu/rest/v2/all
 
@@ -89,10 +88,13 @@ const App = () => {
   const [countries, setCountries] = useState([])
   const [newFilter, setNewFilter] = useState('')
   const [showOne, setShowOne] = useState(null)
+  const [apikey, setApikey] = useState(apikey)
 
   const countriesToShow = countries.filter(c => c.name.toUpperCase().includes(newFilter.toUpperCase()))
 
   //--- hooks ---
+
+  //country data
   useEffect(() => {
     console.log('effect')
     axios
@@ -104,6 +106,17 @@ const App = () => {
       })
   }, [])
 
+  //apikey
+  useEffect(() => {
+    console.log('fetch apikey')
+    axios
+      .get('http://localhost:3002/keys').then(response => {
+        console.log('promise fulfilled')
+        console.log(response);
+        setApikey(response.data[0]["apixu"])
+      })
+  }, [])
+
 
   //--- event handlers ---
   const handleFilterChange = (event) => {
@@ -112,7 +125,7 @@ const App = () => {
   }
 
   const handleClick = (country) => {
-    console.log('button of ${} was clicked ', country);
+    console.log('button was clicked at ', country);
     
     setShowOne(country)
   }
