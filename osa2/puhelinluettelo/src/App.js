@@ -1,5 +1,6 @@
 import React, { useState, useEffect} from 'react'
 import personService from "./services/persons"
+import './index.css'
 
 const Filter = (props) => {
   console.log('render filter', props);
@@ -11,6 +12,18 @@ const Filter = (props) => {
       onChange={props.hfc}
       />
   </div>
+  )
+}
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="notification">
+      {message}
+    </div>
   )
 }
 
@@ -71,6 +84,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newFilter, setNewFilter] = useState('')
+  const [notification, setNotification] = useState(null)
+
 
   const entriesToShow = persons.filter(p => p.name.toUpperCase().includes(newFilter.toUpperCase()))
 
@@ -82,6 +97,13 @@ const App = () => {
         setPersons(data)
     })
   }, [])
+
+  const notify = msg => {
+    setNotification(msg)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
   
   const addEntry = (event) => {
     event.preventDefault()
@@ -91,7 +113,7 @@ const App = () => {
     console.log('filtered persons @add entry', filtered);
     
     if (filtered.length > 0) {
-      if (window.confirm(`${newName} on jo luettelossa, korvataanko vanhva numero uudella?`)) {
+      if (window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`)) {
         // --- päivitetään nro ---
         const changedPerson = {...filtered[0], number: newNumber}
         console.log('päivitetään henkilö ', changedPerson);
@@ -103,6 +125,7 @@ const App = () => {
             setNewName("")
             setNewNumber("")
           })
+        notify(`Henkilön ${changedPerson.name} tiedot päivitetty palvelimelle.`)
       }
     } else {
       // --- luodaan kokonaan uusi kirjaus ---
@@ -119,7 +142,8 @@ const App = () => {
           setPersons(persons.concat(data))
           setNewName('')
           setNewNumber('')
-      })      
+      })
+      notify(`Henkilön ${entryObject.name} tiedot lisätty palvelimelle.`)
     }
   }
 
@@ -134,6 +158,7 @@ const App = () => {
           console.log('remove succeeded, promise ', promise);
           setPersons(persons.filter(p => p.id !== person.id))
       })
+      notify(`Henkilön ${person.name} tiedot poistettu palvelimelta.`)
     }
   }
   
@@ -152,6 +177,7 @@ const App = () => {
   return (
     <div>
       <h2>Puhelinluettelo</h2>
+      <Notification message={notification} />
       <Filter nf={newFilter}
         hfc={handleFilterChange} />
       <h2>lisää uusi</h2>
