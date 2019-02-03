@@ -1,15 +1,9 @@
 import React, { useState, useEffect} from 'react'
 import personService from "./services/persons"
 
-const Person = ({person}) => {
-  console.log('luodaan henkilö', person)
-  
-  return <p>{person.name} {person.number}</p>
-}
-
 const Filter = (props) => {
   console.log('render filter', props);
-
+  
   return (
     <div>
     rajaa näytettäviä: <input 
@@ -22,7 +16,7 @@ const Filter = (props) => {
 
 const PersonForm = (props) => {
   console.log('personform, lets render', props);
-
+  
   return (
     <form onSubmit={props.ae}>
     <div>
@@ -45,12 +39,25 @@ const PersonForm = (props) => {
   
 }
 
-const Persons = ({toShow}) => {
+const Person = ({person, re}) => {
+  console.log('luodaan henkilö', person, re)
+  
+  return (
+    <p>{person.name} {person.number}
+      <button onClick={re}>
+        poista
+      </button>
+    </p>
+  )
+}
+
+const Persons = ({toShow, re}) => {
   console.log('lets render persoooooons', toShow);
   const rows = () => toShow.map(p =>
     <Person
       key={p.name}
       person={p}
+      re={() => re(p)}
     />
   )
 
@@ -95,10 +102,22 @@ const App = () => {
           setPersons(persons.concat(data))
           setNewName('')
           setNewNumber('')
-      })
-      
+      })      
     }
+  }
 
+  const removeEntry = (person) => {
+    console.log('poistentaan entry nimeltä:', person.name);
+
+    if (window.confirm(`Poistetaanko ${person.name}`)) {
+      console.log('lets remove id', person.id);
+      personService
+        .remove(person.id)
+        .then(promise => {
+          console.log('remove succeeded, promise ', promise);
+          setPersons(persons.filter(p => p.id !== person.id))
+      })
+    }
   }
   
   const handleNameChange = (event) => {
@@ -125,7 +144,8 @@ const App = () => {
         nnum={newNumber}
         hnumc={handleNumberChange}/>
       <h2>Numerot</h2>
-      <Persons toShow={entriesToShow} />
+      <Persons toShow={entriesToShow}
+        re={removeEntry} />
     </div>
   )
 
