@@ -85,12 +85,29 @@ const App = () => {
   
   const addEntry = (event) => {
     event.preventDefault()
-    console.log('nappia painettu', event.target)
+    console.log('nappia painettu, lisäillään...', event.target)
 
-    if (persons.map(p => p.name).includes(newName)) {
-      window.alert(`${newName} on jo luettelossa`)
+    const filtered = persons.filter(p => p.name === newName)
+    console.log('filtered persons @add entry', filtered);
+    
+    if (filtered.length > 0) {
+      if (window.confirm(`${newName} on jo luettelossa, korvataanko vanhva numero uudella?`)) {
+        // --- päivitetään nro ---
+        const changedPerson = {...filtered[0], number: newNumber}
+        console.log('päivitetään henkilö ', changedPerson);
+        
+        personService
+          .update(changedPerson.id, changedPerson)
+          .then(data => {
+            setPersons(persons.map(p => p.id !== changedPerson.id ? p : data))
+            setNewName("")
+            setNewNumber("")
+          })
+      }
     } else {
-
+      // --- luodaan kokonaan uusi kirjaus ---
+      console.log('create new entry for', newName);
+      
       const entryObject = {
         name: newName,
         number: newNumber
