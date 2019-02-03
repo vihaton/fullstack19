@@ -18,6 +18,12 @@ const Filter = (props) => {
 const Notification = ({ message }) => {
   if (message === null) {
     return null
+  } else if (message[0] === "E") {
+    return (
+      <div className="error">
+        {message}
+      </div>
+    )
   }
 
   return (
@@ -122,10 +128,15 @@ const App = () => {
           .update(changedPerson.id, changedPerson)
           .then(data => {
             setPersons(persons.map(p => p.id !== changedPerson.id ? p : data))
-            setNewName("")
-            setNewNumber("")
+            notify(`Henkilön ${changedPerson.name} tiedot päivitetty palvelimelle.`)
           })
-        notify(`Henkilön ${changedPerson.name} tiedot päivitetty palvelimelle.`)
+          .catch(error => {
+            notify(`ERROR: Henkilö '${changedPerson.name}' oli jo poistettu palvelimelta`)
+            setPersons(persons.filter(p => p.id !== changedPerson.id))
+          })
+
+        setNewName("")
+        setNewNumber("")
       }
     } else {
       // --- luodaan kokonaan uusi kirjaus ---

@@ -22,3 +22,12 @@ code {
   padding: 10px;
   margin-bottom: 10px;
 }
+.error {
+  color: rgb(173, 14, 14);
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
