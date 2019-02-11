@@ -16,7 +16,7 @@ const Filter = (props) => {
 }
 
 const Notification = ({ message }) => {
-  if (message === null) {
+  if (!message) {
     return null
   } else if (message[0] === "E") {
     return (
@@ -101,6 +101,9 @@ const App = () => {
       .getAll()
       .then(data => {
         setPersons(data)
+    }).catch(error => {
+      console.log('ERROR fetching data', error);
+      
     })
   }, [])
 
@@ -153,8 +156,11 @@ const App = () => {
           setPersons(persons.concat(data))
           setNewName('')
           setNewNumber('')
+      }).catch(error => {
+        console.log("error @ adding a new person", error.response.data.error);
+        notify(`ERROR: ${error.response.data.error}`)
       })
-      notify(`Henkilön ${entryObject.name} tiedot lisätty palvelimelle.`)
+      //notify(`Henkilön ${entryObject.name} tiedot lisätty palvelimelle.`)
     }
   }
 
