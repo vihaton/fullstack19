@@ -1,3 +1,5 @@
+const _ = require("lodash/core")
+
 const dummy = (blogs) => {
   return 1
 }
@@ -14,13 +16,32 @@ const totalLikes = blogs => {
     : blogs.reduce(reducer, 0)
 }
 
-const favoriteBlog = blogs => {
-  const indexOfMaxValue = blogs.reduce((iMax, x, i, blogs) => {
-    return x.likes > blogs[iMax].likes ? i : iMax
+const indexOfMaxValueGivenField = (arr, field) => {
+  return arr.reduce((iMax, x, i, arr) => {
+    return x[field] > arr[iMax][field] ? i : iMax
   }, 0);
+}
+
+const favoriteBlog = blogs => {
+  const indexOfMaxValue = indexOfMaxValueGivenField(blogs, "likes")
   return blogs[indexOfMaxValue]
 }
 
+const mostBlogs = blogs => {
+  
+  const reducedBlogs = _.reduce(blogs, (res, blog) => {
+    res[blog.author]
+      ? res[blog.author] += 1
+      : res[blog.author] = 1
+    // console.log('res', res);
+    
+    return res
+  }, {})
+
+  maxInd = Object.values(reducedBlogs).indexOf(Math.max(...Object.values(reducedBlogs)))
+  return { "author": Object.keys(reducedBlogs)[maxInd], "blogs": Object.values(reducedBlogs)[maxInd] }
+}
+
 module.exports = {
-  dummy, totalLikes, favoriteBlog
+  dummy, totalLikes, favoriteBlog, mostBlogs
 }

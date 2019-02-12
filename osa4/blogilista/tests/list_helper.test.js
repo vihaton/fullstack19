@@ -21,13 +21,24 @@ describe('total likes', () => {
 describe("favourite blog", () => {
 
   test('when list has only one blog', () => {
-    const result = listHelper.favoriteBlog(listWithOneBlog)
-    console.log(result);
-    
+    const result = listHelper.favoriteBlog(listWithOneBlog)    
     expect(result).toEqual(listWithOneBlog[0])
   })
 
   test('when list has several blogs', () => {
     expect(listHelper.favoriteBlog(blogs)).toEqual(blogs[2])
+  })
+})
+
+describe("most blogs ", () => {
+  test('when list has only one blog', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    // console.log("result", result);
+    
+    expect(result).toEqual({"author": 'Edsger W. Dijkstra', "blogs":1})
+  })
+
+  test('when list has several blogs', () => {
+    expect(listHelper.mostBlogs(blogs)).toEqual({"author":'Robert C. Martin', "blogs":3})
   })
 })
