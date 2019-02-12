@@ -42,6 +42,20 @@ const mostBlogs = blogs => {
   return { "author": Object.keys(reducedBlogs)[maxInd], "blogs": Object.values(reducedBlogs)[maxInd] }
 }
 
+const mostLikes = blogs => {
+  const reducedBlogs = _.reduce(blogs, (res, blog) => {
+    res[blog.author]
+      ? res[blog.author] += blog.likes
+      : res[blog.author] = blog.likes
+    // console.log('res', res);
+    
+    return res
+  }, {})
+
+  maxInd = Object.values(reducedBlogs).indexOf(Math.max(...Object.values(reducedBlogs)))
+  return { "author": Object.keys(reducedBlogs)[maxInd], "likes": Object.values(reducedBlogs)[maxInd] }
+}
+
 module.exports = {
-  dummy, totalLikes, favoriteBlog, mostBlogs
+  dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }
