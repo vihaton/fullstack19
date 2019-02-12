@@ -1,0 +1,2 @@
+GET http://localhost:3003/api/blogs/5c62fc7f1c9d440000ce550c
+#GET http://localhost:3003/api/blogs/keksittyid
