@@ -45,8 +45,6 @@ describe("basic tests for blogs", () => {
 describe("4.9*-4.12*", () => {
   test("id is id not _id", async () => {
     const resp = await api.get("/api/blogs")
-
-    console.log(resp.body[0]);
     
     expect(resp.body[0].id).toBeDefined()
   })
@@ -74,7 +72,7 @@ describe("4.9*-4.12*", () => {
 
     await api
     .post('/api/blogs')
-    .send(blogs[4])
+    .send(woLikes)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -86,6 +84,28 @@ describe("4.9*-4.12*", () => {
     likes.forEach(like => {
       expect(like).not.toBeUndefined()
     });
+
+  })
+  test("4.12* if url or title is not defined, return 400", async () => {
+    woUrl = blogs[4]
+    delete woUrl.url
+
+    await api
+    .post('/api/blogs')
+    .send(woUrl)
+    .expect(400)
+
+    woTitle  = blogs[3]
+    delete woTitle.title
+
+    await api
+    .post('/api/blogs')
+    .send(woTitle)
+    .expect(400)
+
+    const response = await api.get('/api/blogs')
+    
+    expect(response.body.length).toBe(2)
 
   })
 })
