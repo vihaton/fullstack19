@@ -5,17 +5,18 @@ const app = express()
 const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
 const mongoose = require('mongoose')
+const logger = require('./utils/logger')
 
 const url = config.MONGODB_URI
 
-console.log('commecting to', url)
+logger.info('connecting to', config.MONGODB_URI)
 
 mongoose.connect(url, { useNewUrlParser: true })
   .then( () => {
-    console.log('connected to MongoDB')
+    logger.info('connected to MongoDB')
   })
   .catch(error => {
-    console.log('failed to connect with error', error)
+    logger.error('failed to connect with error', error)
   })
 
 app.use(express.static('build'))
