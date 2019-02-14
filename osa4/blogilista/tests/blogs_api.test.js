@@ -67,6 +67,27 @@ describe("4.9*-4.12*", () => {
       blogs[2].title
     )
   })
+
+  test("4.11* if likes is not defined, it's set to 0", async () => {
+    woLikes = blogs[4]
+    delete woLikes.likes
+
+    await api
+    .post('/api/blogs')
+    .send(blogs[4])
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+
+    const likes = response.body.map(r => r.likes)
+
+    expect(response.body.length).toBe(3)
+    likes.forEach(like => {
+      expect(like).not.toBeUndefined()
+    });
+
+  })
 })
     
     afterAll(() => {
