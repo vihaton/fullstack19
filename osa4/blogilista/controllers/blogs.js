@@ -6,12 +6,12 @@ const logger = require('../utils/logger')
 const {blogs} = require('../tests/example_blogs')
 
 const getTokenFrom = async request => {
-  const authorization = await request.get('Authorization')
+  const authorization = await request.get('Authorization').substring(1)
   // console.log('author', authorization.toLowerCase(), typeof(authorization));
-  // console.log('starts with b ', authorization.toLowerCase().startsWith('b')); //return false for some reason
-  
-  if (authorization) { //} && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(8)
+  // console.log('starts with b ', authorization.toLowerCase().startsWith('b'));
+
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
   } 
   return null
 }
@@ -69,15 +69,15 @@ blogsRouter.post('/', async (request, response, next) => {
 
     const decodedToken = jwt.verify(token, process.env.SECRET)
     
-    // console.log('token and decoded', token, decodedToken);
+    console.log('token and decoded', token, decodedToken);
     
-    // if (!token || !decodedToken.id) {
-    //   return response.status(401).json({ error: 'token missing or invalid' })
-    // }
+    if (!token || !decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
 
-    // const user = await User.findById(decodedToken.id)
-    const users = await User.find({})
-    const user = users[0]
+    const user = await User.findById(decodedToken.id)
+    // const users = await User.find({})
+    // const user = users[0]
     const blog = new Blog( {...request.body, "user": user._id})
   
     const savedBlog = await blog.save()
@@ -86,6 +86,7 @@ blogsRouter.post('/', async (request, response, next) => {
     response.status(201).json(savedBlog.toJSON())
   } catch(exception) {
     next(exception)
+    response.status(400)
   }
 })
 
