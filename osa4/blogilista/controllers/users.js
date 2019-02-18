@@ -13,7 +13,7 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response, next) => {  
   try {
     const body = request.body
-
+    
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(body.password, saltRounds)
 
@@ -27,6 +27,7 @@ usersRouter.post('/', async (request, response, next) => {
 
     response.json(savedUser)
   } catch (exception) {
+    response.status(400)
     next(exception)
   }
 })
