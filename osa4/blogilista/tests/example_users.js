@@ -1,12 +1,9 @@
 users = [
   {
-    username: 'mluukkai',
-    _id: 123456,
-  },
-  {
-    username: 'hellas',
-    _id: 141414,
-  },
+    username: "mluukkai",
+    name: "Matti Luukkainen",
+    password: "salainen",
+    }
 ];
 
 module.exports = users

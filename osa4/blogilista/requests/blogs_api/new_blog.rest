@@ -1,9 +1,12 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
 
-{
-  "title": "Thö Blogi",
-  "author": "Vili",
-  "url": "www.github.com/vihaton",
-  "likes": 321,
-}
+  {
+    "_id": "5a422a851b54a676234d17f7",
+    "title": "React patterns",
+    "author": "Michael Chan",
+    "url": "https://reactpatterns.com/",
+    "likes": 7,
+    "userId": "5c66ef591b18835bd5574f6e",
+    "__v": 0
+  }

@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const logger = require('../utils/logger')
 const {blogs} = require('../tests/example_blogs')
 
@@ -22,31 +23,44 @@ blogsRouter.get('/init', async (req, resp) => {
   resp.status(200).end(`blogs-app DB successfully initiated; we added ${added}`)
 })
 
+blogsRouter.get('/removeall', async (request, response) => {
+  await Blog.remove({})
+  response.status(200).end('all blogs removed')
+})
+
 blogsRouter.get('/', async (request, response) => {
   Blog
     .find({})
+    .populate('user', {username:1, name:1, id:1})
     .then(blogs => {
       response.json(blogs)
     })
 })
   
-blogsRouter.post('/', (request, response) => {
-  const blog = new Blog(request.body)
+blogsRouter.post('/', async (request, response, next) => {
+  const body = request.body
 
-  if (!blog.title || !blog.url) {
+  if (!body.title || !body.url) {
     response.status(400).end()
     return
   }
   
-  if (!blog.likes) {
-    blog.likes = 0
+  if (!body.likes) {
+    body.likes = 0
   }
 
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-  })
+  const users = await User.find({})
+  const user = users[0]
+  const blog = new Blog( {...request.body, "user": user._id})
+  
+  try {
+    const savedBlog = await blog.save()
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
+    response.status(201).json(savedBlog.toJSON())
+  } catch(exception) {
+    next(exception)
+  }
 })
 
 blogsRouter.delete("/:id", async (req, resp) => {

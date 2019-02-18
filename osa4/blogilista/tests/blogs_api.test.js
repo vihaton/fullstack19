@@ -2,19 +2,26 @@ const mongoose = require("mongoose")
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require("../models/blog")
+const User = require("../models/user")
 const {blogs} = require("./example_blogs")
+const users = require("./example_users")
+const helper = require("./test_helper")
 
 const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.remove({})
-
+  
   let blogObject = new Blog(blogs[0])
   await blogObject.save()
-
+  
   blogObject = new Blog(blogs[1])
   await blogObject.save()
-})
+
+  await User.remove({})
+  await api
+  .post('/api/users')
+  .send(users[0])})
 
 describe("basic tests for blogs", () => {
 
@@ -49,7 +56,7 @@ describe("4.9*-4.12*", () => {
     expect(resp.body[0].id).toBeDefined()
   })
 
-  test("4.10 post", async () => {
+  test("4.10 post", async () => { 
     await api
     .post('/api/blogs')
     .send(blogs[2])
