@@ -5,9 +5,10 @@ const Blog = require("../models/blog")
 const User = require("../models/user")
 const {blogs} = require("./example_blogs")
 const users = require("./example_users")
-const helper = require("./test_helper")
 
 const api = supertest(app)
+
+let token = ""
 
 beforeEach(async () => {
   await Blog.remove({})
@@ -21,7 +22,8 @@ beforeEach(async () => {
   await User.remove({})
   await api
   .post('/api/users')
-  .send(users[0])})
+  .send(users[0])
+})
 
 describe("basic tests for blogs", () => {
 

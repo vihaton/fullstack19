@@ -11,10 +11,15 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON())
 }
 
+const login = async (user) => {
+  
+}
+
 const nonExistingId = 'asdöflkj'
 
 module.exports = {
   nonExistingId,
   blogsInDB,
   usersInDb,
+  login
 }

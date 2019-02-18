@@ -5,17 +5,6 @@ const User = require('../models/user')
 const logger = require('../utils/logger')
 const {blogs} = require('../tests/example_blogs')
 
-const getTokenFrom = async request => {
-  const authorization = await request.get('Authorization').substring(1)
-  // console.log('author', authorization.toLowerCase(), typeof(authorization));
-  // console.log('starts with b ', authorization.toLowerCase().startsWith('b'));
-
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  } 
-  return null
-}
-
 blogsRouter.get('/init', async (req, resp) => {
   existingBlogs = await Blog.find({})
   logger.info(`Let's init the DB, we have ${existingBlogs.length} blogs atm and the init file has ${blogs.length}`)
@@ -64,12 +53,11 @@ blogsRouter.post('/', async (request, response, next) => {
 
   try {
     //signed in?
-    const token = await getTokenFrom(request)
-    console.log('token', token);
-
-    const decodedToken = jwt.verify(token, process.env.SECRET)
+    console.log('request.token', request.token);
     
-    console.log('token and decoded', token, decodedToken);
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    
+    console.log('token and decoded', request.token, decodedToken);
     
     if (!token || !decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' })
