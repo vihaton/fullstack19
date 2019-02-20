@@ -3,9 +3,8 @@ const logger = require('./logger')
 const tokenExtractor = (request, response, next) => {
   let authorization = request.get('Authorization')
   
-  if (authorization) {
-    authorization = authorization.substring(1) //why? IDK
-    
+  if (authorization) {  
+
     if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
       request.token = authorization.substring(7)
     } 

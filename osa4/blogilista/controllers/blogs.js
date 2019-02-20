@@ -50,14 +50,14 @@ blogsRouter.post('/', async (request, response, next) => {
   if (!body.likes) {
     body.likes = 0
   }
-
+  
   try {
     //signed in?
-    console.log('request.token', request.token);
+    const token = request.token
     
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    const decodedToken = jwt.verify(token, process.env.SECRET)
     
-    console.log('token and decoded', request.token, decodedToken);
+    // console.log('token and decoded', token, decodedToken);
     
     if (!token || !decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' })
