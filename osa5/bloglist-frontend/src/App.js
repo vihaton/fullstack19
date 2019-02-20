@@ -161,9 +161,10 @@ const App = () => {
       const data = await blogService.create(blogObject)
       
       setBlogs(blogs.concat(data))
-      // setNewTitle('')
-      // setNewAuthor('')
-      // setNewUrl('')
+      setNewTitle('')
+      setNewAuthor('')
+      setNewUrl('')
+      notify(`a new blog ${data.title} by ${data.author} was added`)
       
     } catch (error) {
       console.log("error @ adding a new blog", error.response.data.error);
