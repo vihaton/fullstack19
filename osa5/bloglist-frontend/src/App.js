@@ -49,6 +49,16 @@ const App = () => {
     }
   }
 
+  const handleLogout = (event) => {
+    try {
+      window.localStorage.removeItem('loggedNoteappUser')
+      window.location.reload()
+    } catch (exception) {
+      console.log('uloskirjautummisessa ongelmia');
+      
+    }
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -93,6 +103,9 @@ const App = () => {
           <h2>blogs</h2>
           <p>{user.name} logged in</p>
     
+          <button onClick={handleLogout}>
+            logout
+          </button>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
