@@ -1,15 +1,95 @@
 import React, { useState, useEffect } from 'react'
+import './index.css'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login' 
 
+const Notification = ({ message }) => {
+  if (!message) {
+    return null
+  } else if (message[0] === "E") {
+    return (
+      <div className="error">
+        {message}
+      </div>
+    )
+  }
+
+  return (
+    <div className="notification">
+      {message}
+    </div>
+  )
+}
+
+
+const LoginForm = ({handleLogin, username, password, handNameChange, handPassChange}) => (
+  <form onSubmit={handleLogin}>
+    <div>
+      <h2>Log in to application</h2>
+      käyttäjätunnus
+        <input
+        type="text"
+        value={username}
+        name="Username"
+        onChange={handNameChange}
+      />
+    </div>
+    <div>
+      salasana
+        <input
+        type="password"
+        value={password}
+        name="Password"
+        onChange={handPassChange}
+      />
+    </div>
+    <button type="submit">kirjaudu</button>
+  </form>      
+)
+
+
+const BlogForm = ({addBlog, nTitle, nAuth, nUrl, handTitChange, handAuthChange, handUrlChange}) => (
+  <form onSubmit={addBlog}>
+  <div>
+    title
+    <input
+      value={nTitle}
+      onChange={handTitChange}
+      />
+    </div>
+      
+    <div>
+    author
+    <input
+      value={nAuth}
+      onChange={handAuthChange}
+      />
+    </div>
+      
+    <div>
+    url
+    <input
+      value={nUrl}
+      onChange={handUrlChange}
+      />
+    </div>
+      
+    <div>
+    <button type="submit">create</button>
+  </div>
+  </form>  
+)
 
 const App = () => {
   const [blogs, setBlogs] = useState([])  
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
   const [user, setUser] = useState(null)
+  const [newTitle, setNewTitle] = useState("")
+  const [newAuthor, setNewAuthor] = useState("")
+  const [newUrl, setNewUrl] = useState("")
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -26,12 +106,22 @@ const App = () => {
     }
   }, [])
 
+  const notify = msg => {
+    setNotification(msg)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const user = await loginService.login({
         username, password,
       })
+
+      console.log('logged in as user', user);
+      
 
       window.localStorage.setItem(
         'loggedNoteappUser', JSON.stringify(user)
@@ -42,10 +132,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('käyttäjätunnus tai salasana virheellinen')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      notify('ERROR käyttäjätunnus tai salasana virheellinen')
     }
   }
 
@@ -54,55 +141,81 @@ const App = () => {
       window.localStorage.removeItem('loggedNoteappUser')
       window.location.reload()
     } catch (exception) {
-      console.log('uloskirjautummisessa ongelmia');
-      
+      notify('uloskirjautummisessa ongelmia');
     }
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        <h2>Log in to application</h2>
-        käyttäjätunnus
-          <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        salasana
-          <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">kirjaudu</button>
-    </form>      
-  )
+  const addBlog = async (event) => {
+    event.preventDefault()
 
-  // const blogForm = () => (
-  //   <form onSubmit={addBlog}>
-  //     <input
-  //       value={newBlog}
-  //       onChange={handleBlogChange}
-  //     />
-  //     <button type="submit">tallenna</button>
-  //   </form>  
-  // )
+    // --- luodaan kokonaan uusi kirjaus ---
+    console.log('create new entry for', newTitle);
+    
+    const blogObject = {
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+    }
+
+    try {
+      const data = await blogService.create(blogObject)
+      
+      setBlogs(blogs.concat(data))
+      // setNewTitle('')
+      // setNewAuthor('')
+      // setNewUrl('')
+      
+    } catch (error) {
+      console.log("error @ adding a new blog", error.response.data.error);
+      notify(`ERROR: ${error.response.data.error}`)
+    }
+  }
+
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value)
+  }
+
+  const handleAuthorChange = (event) => {
+    setNewAuthor(event.target.value)
+  }
+
+  const handleUrlChange = (event) => {
+    setNewUrl(event.target.value)
+  }
+
+  const handleUsernameChange = event => {
+    setUsername(event.target.value)
+  }
+
+  const handlePasswordChange = event => {
+    setPassword(event.target.value)
+  }
+
 
   return (
     <div>
+      <Notification message={notification} />
 
       {user === null ?
-        loginForm() :
+        <LoginForm handleLogin={handleLogin}
+          username={username} password={password} 
+          handNameChange={handleUsernameChange} 
+          handPassChange={handlePasswordChange}/>
+        :
         <div>
+
           <h2>blogs</h2>
           <p>{user.name} logged in</p>
     
+          <BlogForm addBlog={addBlog}
+            nTitle={newTitle}
+            nAuth={newAuthor}
+            nUrl={newUrl}
+            handTitChange={handleTitleChange}
+            handAuthChange={handleAuthorChange}
+            handUrlChange={handleUrlChange} />
+          
+          
           <button onClick={handleLogout}>
             logout
           </button>
