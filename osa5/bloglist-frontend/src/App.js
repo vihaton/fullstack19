@@ -3,6 +3,7 @@ import './index.css'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login' 
+import Togglable from './Togglable'
 
 const Notification = ({ message }) => {
   if (!message) {
@@ -197,34 +198,43 @@ const App = () => {
     <div>
       <Notification message={notification} />
 
-      {user === null ?
+      <h2>Login</h2>
+
+      <Togglable buttonLabel="login">
         <LoginForm handleLogin={handleLogin}
           username={username} password={password} 
           handNameChange={handleUsernameChange} 
           handPassChange={handlePasswordChange}/>
-        :
-        <div>
+      </Togglable>
 
-          <h2>blogs</h2>
-          <p>{user.name} logged in</p>
-    
-          <BlogForm addBlog={addBlog}
-            nTitle={newTitle}
-            nAuth={newAuthor}
-            nUrl={newUrl}
-            handTitChange={handleTitleChange}
-            handAuthChange={handleAuthorChange}
-            handUrlChange={handleUrlChange} />
-          
-          
-          <button onClick={handleLogout}>
-            logout
-          </button>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
-        </div>
-      }
+      <div>
+        <h2>blogs</h2>
+        
+        {user ? 
+          <div>
+            <p>{user.name} logged in</p>
+            <button onClick={handleLogout}>
+              logout
+            </button>
+
+            <Togglable buttonLabel="new blog">
+              <BlogForm addBlog={addBlog}
+                nTitle={newTitle}
+                nAuth={newAuthor}
+                nUrl={newUrl}
+                handTitChange={handleTitleChange}
+                handAuthChange={handleAuthorChange}
+                handUrlChange={handleUrlChange} />
+            </Togglable>
+            
+            {blogs.map(blog =>
+              <Blog key={blog.id} blog={blog} />
+              )}
+          </div>
+        : ""
+        }
+      </div>
+
     </div>
   )
 }
