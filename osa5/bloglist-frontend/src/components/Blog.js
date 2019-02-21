@@ -8,7 +8,7 @@ const blogStyle = {
   marginBottom: 5
 }
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLike }) => {
 
   const [visible, setVisible] = useState(false)
   
@@ -20,7 +20,7 @@ const Blog = ({ blog }) => {
     setVisible(!visible)
   }
 
-  // console.log('blog', blog);
+  console.log('blog', blog);
   
   return (
     <div style={blogStyle}>
@@ -30,7 +30,7 @@ const Blog = ({ blog }) => {
         <div style={showWhenVisible}>
           <a href={blog.url}>{blog.url}</a> <br></br>
           {blog.likes} likes 
-          <button onClick={() => console.log('liked')}>
+          <button onClick={() => handleLike(blog)}>
             Like
           </button> <br></br>
           added by {blog.user.name}

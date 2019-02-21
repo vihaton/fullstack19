@@ -142,8 +142,19 @@ const App = () => {
       window.localStorage.removeItem('loggedNoteappUser')
       window.location.reload()
     } catch (exception) {
-      notify('uloskirjautummisessa ongelmia');
+      notify('ERROR uloskirjautummisessa ongelmia');
     }
+  }
+
+  const handleLike = async (blogToUpdate) => {
+    const newObject = {...blogToUpdate, "user": blogToUpdate.user.id, "likes":blogToUpdate.likes + 1}
+    const id = newObject.id
+    delete newObject._id
+    const updated = await blogService.update(id, newObject)
+    console.log('updated blog', updated);
+    setBlogs(blogs.map(blog =>
+      blog.id !== updated.id ? blog : updated
+    ))
   }
 
   const addBlog = async (event) => {
@@ -228,7 +239,7 @@ const App = () => {
             </Togglable>
             
             {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} />
+              <Blog key={blog.id} blog={blog} handleLike={handleLike} />
               )}
           </div>
         : ""
