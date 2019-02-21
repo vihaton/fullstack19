@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
 const blogStyle = {
   paddingTop: 10,
@@ -8,20 +8,20 @@ const blogStyle = {
   marginBottom: 5
 }
 
-const Blog = ({ blog, handleLike, removeBlog, user}) => {
+const Blog = ({ blog, handleLike, removeBlog, user }) => {
 
   const [visible, setVisible] = useState(false)
-  
+
   // const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
-  
+
   const toggleVisibility = () => {
     // console.log('clicked');
     setVisible(!visible)
   }
 
-  console.log('render blog', blog);
-  
+  console.log('render blog', blog)
+
   return (
     <div style={blogStyle}>
       <div onClick={toggleVisibility}>
@@ -29,7 +29,7 @@ const Blog = ({ blog, handleLike, removeBlog, user}) => {
 
         <div style={showWhenVisible}>
           <a href={blog.url}>{blog.url}</a> <br></br>
-          {blog.likes} likes 
+          {blog.likes} likes
           <button onClick={() => handleLike(blog)}>
             Like
           </button> <br></br>
@@ -37,14 +37,14 @@ const Blog = ({ blog, handleLike, removeBlog, user}) => {
           added by {blog.user.name} <br/>
 
           {user.username === blog.user.username ?
-          <button onClick={() => removeBlog(blog)}>
-          remove
-          </button>
-          : ""
+            <button onClick={() => removeBlog(blog)}>
+            remove
+            </button>
+            : ''
           }
         </div>
       </div>
-    </div> 
+    </div>
   )
 }
 
