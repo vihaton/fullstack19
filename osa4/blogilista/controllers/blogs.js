@@ -86,10 +86,10 @@ blogsRouter.delete("/:id", async (req, resp) => {
 })
 
 blogsRouter.put("/:id", async (req, resp) => {
-  logger.info('put with id', req.params.id)
-  const blog = Blog(req.body)
+  // logger.info('put with id', req.params.id)
+  // logger.info('req.body', req.body)
 
-  updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
+  updatedBlog = await Blog.findByIdAndUpdate(req.params.id, req.body, { new: true })
   
   logger.info(`updated blog ${updatedBlog}`)
   resp.json(updatedBlog.toJSON())
