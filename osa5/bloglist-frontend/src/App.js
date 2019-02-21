@@ -172,7 +172,10 @@ const App = () => {
     try {
       const data = await blogService.create(blogObject)
       
-      setBlogs(blogs.concat(data))
+      //to fetch the user object that is attached to the new blog
+      blogService.getAll().then(blogs =>
+        setBlogs( blogs )
+      )  
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
@@ -252,7 +255,8 @@ const App = () => {
               .sort((a, b) => b.likes - a.likes)
               .map(blog =>
                 <Blog key={blog.id} blog={blog}
-                 handleLike={handleLike} removeBlog={removeBlog} />
+                 handleLike={handleLike} removeBlog={removeBlog}
+                 user={user} />
               )}
           </div>
         : ""
