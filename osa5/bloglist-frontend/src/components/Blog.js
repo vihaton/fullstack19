@@ -8,7 +8,7 @@ const blogStyle = {
   marginBottom: 5
 }
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, removeBlog }) => {
 
   const [visible, setVisible] = useState(false)
   
@@ -33,7 +33,12 @@ const Blog = ({ blog, handleLike }) => {
           <button onClick={() => handleLike(blog)}>
             Like
           </button> <br></br>
-          added by {blog.user.name}
+
+          added by {blog.user.name} <br/>
+
+          <button onClick={() => removeBlog(blog)}>
+          remove
+          </button>
         </div>
       </div>
     </div> 

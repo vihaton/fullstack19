@@ -184,6 +184,16 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (toBeRemoved) => {
+    console.log('remove blog', toBeRemoved);
+    
+    if (window.confirm(`remove blog ${toBeRemoved.title} by ${toBeRemoved.author}?`)) {
+      const resp = await blogService.remove(toBeRemoved.id)
+      console.log('blog successfully removed, response.body:', resp.body);
+      setBlogs(blogs.filter(blog => blog.id !== toBeRemoved.id))
+    }
+  }
+
   const handleTitleChange = (event) => {
     setNewTitle(event.target.value)
   }
@@ -241,7 +251,8 @@ const App = () => {
             {blogs
               .sort((a, b) => b.likes - a.likes)
               .map(blog =>
-                <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+                <Blog key={blog.id} blog={blog}
+                 handleLike={handleLike} removeBlog={removeBlog} />
               )}
           </div>
         : ""
