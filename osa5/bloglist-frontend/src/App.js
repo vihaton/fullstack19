@@ -73,7 +73,8 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = localStorage.getItem('loggedBlogAppUser')
+    // console.log('loggedUserJSON', loggedUserJSON)
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -98,7 +99,7 @@ const App = () => {
       console.log('logged in as user', user)
 
       window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
+        'loggedBlogAppUser', JSON.stringify(user)
       )
 
       blogService.setToken(user.token)
@@ -112,7 +113,7 @@ const App = () => {
 
   const handleLogout = (event) => {
     try {
-      window.localStorage.removeItem('loggedNoteappUser')
+      window.localStorage.removeItem('loggedBlogAppUser')
       window.location.reload()
     } catch (exception) {
       notify('ERROR uloskirjautummisessa ongelmia')
@@ -192,7 +193,7 @@ const App = () => {
 
 
   return (
-    <div>
+    <div className='app'>
       <Notification message={notification} />
 
       <h2>Login</h2>
@@ -208,7 +209,7 @@ const App = () => {
         <h2>blogs</h2>
 
         {user ?
-          <div>
+          <div className='blogs'>
             <p>{user.name} logged in</p>
             <button onClick={handleLogout}>
               logout

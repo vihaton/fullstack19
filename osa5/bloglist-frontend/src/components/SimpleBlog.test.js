@@ -29,7 +29,7 @@ test('clicking the button calls event handler once', async () => {
   const mockHandler = jest.fn()
 
   const { getByText } = render(
-    <SimpleBlog blog={initSBlog} onClick={mockHandler} />
+    <SimpleBlog blog={initSBlog()} onClick={mockHandler} />
   )
 
   const button = getByText('like')
