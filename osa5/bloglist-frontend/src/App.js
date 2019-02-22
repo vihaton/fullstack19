@@ -5,6 +5,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
+import { useField } from './hooks'
 
 const Notification = ({ message }) => {
   if (!message) {
@@ -24,47 +26,16 @@ const Notification = ({ message }) => {
   )
 }
 
-const BlogForm = ({ addBlog, nTitle, nAuth, nUrl, handTitChange, handAuthChange, handUrlChange }) => (
-  <form onSubmit={addBlog}>
-    <div>
-    title
-      <input
-        value={nTitle}
-        onChange={handTitChange}
-      />
-    </div>
-
-    <div>
-    author
-      <input
-        value={nAuth}
-        onChange={handAuthChange}
-      />
-    </div>
-
-    <div>
-    url
-      <input
-        value={nUrl}
-        onChange={handUrlChange}
-      />
-    </div>
-
-    <div>
-      <button type='submit'>create</button>
-    </div>
-  </form>
-)
-
 const App = () => {
   const [blogs, setBlogs] = useState( [] )
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [notification, setNotification] = useState(null)
   const [user, setUser] = useState(null)
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+
+  const username = useField('text')
+  const password = useField('password')
+  const title = useField('text')
+  const author = useField('text')
+  const url = useField('text')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -104,8 +75,8 @@ const App = () => {
 
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
     } catch (exception) {
       notify('ERROR käyttäjätunnus tai salasana virheellinen')
     }
@@ -135,13 +106,15 @@ const App = () => {
     event.preventDefault()
 
     // --- luodaan kokonaan uusi kirjaus ---
-    console.log('create new entry for', newTitle)
+    console.log('create new entry for', title.value)
 
     const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
+      title: title.value,
+      author: author.value,
+      url: url.value
     }
+
+    console.log('new blog', blogObject)
 
     try {
       const data = await blogService.create(blogObject)
@@ -150,9 +123,9 @@ const App = () => {
       blogService.getAll().then(blogs =>
         setBlogs( blogs )
       )
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
+      title.reset()
+      author.reset()
+      url.reset()
       notify(`a new blog ${data.title} by ${data.author} was added`)
 
     } catch (error) {
@@ -171,27 +144,6 @@ const App = () => {
     }
   }
 
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value)
-  }
-
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value)
-  }
-
-  const handleUrlChange = (event) => {
-    setNewUrl(event.target.value)
-  }
-
-  const handleUsernameChange = event => {
-    setUsername(event.target.value)
-  }
-
-  const handlePasswordChange = event => {
-    setPassword(event.target.value)
-  }
-
-
   return (
     <div className='app'>
       <Notification message={notification} />
@@ -200,9 +152,7 @@ const App = () => {
 
       <Togglable buttonLabel='login'>
         <LoginForm handleLogin={handleLogin}
-          username={username} password={password}
-          handNameChange={handleUsernameChange}
-          handPassChange={handlePasswordChange}/>
+          username={username} password={password} />
       </Togglable>
 
       <div>
@@ -217,12 +167,9 @@ const App = () => {
 
             <Togglable buttonLabel='new blog'>
               <BlogForm addBlog={addBlog}
-                nTitle={newTitle}
-                nAuth={newAuthor}
-                nUrl={newUrl}
-                handTitChange={handleTitleChange}
-                handAuthChange={handleAuthorChange}
-                handUrlChange={handleUrlChange} />
+                title={title}
+                author={author}
+                url={url} />
             </Togglable>
 
             {blogs
