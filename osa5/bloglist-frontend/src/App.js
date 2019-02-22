@@ -26,6 +26,11 @@ const Notification = ({ message }) => {
   )
 }
 
+const removeReset = state => {
+  const { reset, ...cleanState } = state
+  return (cleanState)
+}
+
 const App = () => {
   const [blogs, setBlogs] = useState( [] )
   const [notification, setNotification] = useState(null)
@@ -152,7 +157,7 @@ const App = () => {
 
       <Togglable buttonLabel='login'>
         <LoginForm handleLogin={handleLogin}
-          username={username} password={password} />
+          username={removeReset(username)} password={removeReset(password)} />
       </Togglable>
 
       <div>
@@ -167,9 +172,9 @@ const App = () => {
 
             <Togglable buttonLabel='new blog'>
               <BlogForm addBlog={addBlog}
-                title={title}
-                author={author}
-                url={url} />
+                title={removeReset(title)}
+                author={removeReset(author)}
+                url={removeReset(url)} />
             </Togglable>
 
             {blogs
