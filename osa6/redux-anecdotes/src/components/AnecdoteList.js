@@ -27,8 +27,6 @@ const AnecdoteList = (props) => {
     <div>
       <h2>Anecdotes</h2>
       {anecdotes
-        .sort((a, b) => b.votes - a.votes)
-        .filter(anecdote => anecdote.content.toUpperCase().includes(props.filter[0].toUpperCase()))
         .map(anecdote =>
         <div key={anecdote.id}>
           <div>
@@ -44,13 +42,16 @@ const AnecdoteList = (props) => {
   )
 }
 
+const filterAnecdotes = ({ anecdotes, filter }) => {
+  return anecdotes.sort((a, b) => b.votes - a.votes)
+    .filter(anecdote => anecdote.content.toUpperCase().includes(filter[0].toUpperCase()))
+}
+
 const mapStateToProps = (state) => {
   // joskus on hyödyllistä tulostaa mapStateToProps:ista...
   console.log('AnecdoteList state to props, state:', state)
   return {
-    anecdotes: state.anecdotes,
-    filter: state.filter,
-    notifications: state.notifications
+    anecdotes: filterAnecdotes(state),
   }
 }
 
