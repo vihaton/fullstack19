@@ -15,10 +15,21 @@ const notificationReducer = (state = initialState, action) => {
   console.log('action', action)
 
   switch (action.type) {
-
+    case 'UPDATE_N':
+      return state.map(n => action.data) //assumes that there is only one content
     default: {
       console.log('use default reaction')
       return state
+    }
+  }
+}
+
+export const updateNotification = (content) => {
+  console.log('action creator for notification update', content)
+  return {
+    type: 'UPDATE_N',
+    data: {
+      content
     }
   }
 }

@@ -2,15 +2,30 @@ import React from 'react';
 import {
   vote
 } from '../reducers/anecdoteReducer'
+import { updateNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = ({ store }) => {
   const anecdotes = store.getState().anecdotes
 
-  const handleVote = (id) => {
-    console.log('vote', id)
+  const handleVote = (anecdote) => {
+    console.log('vote', anecdote.id)
     store.dispatch(
-      vote(id)
+      vote(anecdote.id)
     )
+    const msg = `you have voted '${anecdote.content}'`
+    store.dispatch(
+      updateNotification(msg)
+    )
+    setTimeout(() => {
+      if (store.getState().notifications[0].content === msg) {
+        console.log('timeout after 5s')
+        store.dispatch(
+          updateNotification('')
+        )
+      } else {
+        console.log('the notification had already changed')
+      }
+    }, 5000)
   }
   return (
     <div>
@@ -24,7 +39,7 @@ const AnecdoteList = ({ store }) => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => handleVote(anecdote.id)}>vote</button>
+            <button onClick={() => handleVote(anecdote)}>vote</button>
           </div>
         </div>
       )}
