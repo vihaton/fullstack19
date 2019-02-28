@@ -4,21 +4,21 @@ import {
 } from '../reducers/anecdoteReducer'
 import { updateNotification } from "../reducers/notificationReducer";
 
-const AnecdoteForm = ({store}) => {
+const AnecdoteForm = (props) => {
   const addAnecdote = (event) => {
       event.preventDefault()
-      store.dispatch(
+      props.props.store.dispatch(
         createAnecdote(event.target.anecdote.value)
       )
       const msg = `you have created anecdote: '${event.target.anecdote.value}'`
       event.target.anecdote.value = ''
-      store.dispatch(
+      props.props.store.dispatch(
         updateNotification(msg)
       )
       setTimeout(() => {
-        if (store.getState().notifications[0].content === msg) {
+        if (props.notifications[0].content === msg) {
           console.log('timeout after 5s')
-          store.dispatch(
+          props.props.store.dispatch(
             updateNotification('')
           )
         } else {
