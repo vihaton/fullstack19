@@ -32,6 +32,7 @@ const AnecdoteList = ({ store }) => {
       <h2>Anecdotes</h2>
       {anecdotes
         .sort((a, b) => b.votes - a.votes)
+        .filter(anecdote => anecdote.content.toUpperCase().includes(store.getState().filter[0].toUpperCase()))
         .map(anecdote =>
         <div key={anecdote.id}>
           <div>

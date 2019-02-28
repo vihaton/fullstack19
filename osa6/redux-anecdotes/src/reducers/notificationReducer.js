@@ -1,5 +1,3 @@
-let timeout
-
 const notificationAtStart = [
   "Let's init this thing"
 ]
