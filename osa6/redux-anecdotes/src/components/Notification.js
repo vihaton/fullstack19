@@ -1,6 +1,8 @@
 import React from 'react';
 
-const Notification = () => {
+const Notification = (props) => {
+  const notifications = props.store.getState().notifications
+  console.log('Notification', notifications)
   const style = {
     border: 'solid',
     padding: 10,
@@ -8,7 +10,9 @@ const Notification = () => {
   }
   return (
     <div style={style}>
-      render here notification...
+      {notifications.map(n =>
+        n.content
+      )}
     </div>
   )
 }
