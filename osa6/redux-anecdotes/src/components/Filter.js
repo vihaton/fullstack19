@@ -20,4 +20,4 @@ const Filter = (props) => {
   )
 }
 
-export default connect((state) => state)(Filter)
+export default connect()(Filter)

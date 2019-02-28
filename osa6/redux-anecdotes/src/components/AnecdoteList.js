@@ -10,22 +10,17 @@ const AnecdoteList = (props) => {
 
   const handleVote = (anecdote) => {
     console.log('vote', anecdote.id)
-    props.store.dispatch(
+    props.dispatch(
       vote(anecdote.id)
     )
     const msg = `you have voted '${anecdote.content}'`
-    props.store.dispatch(
+    props.dispatch(
       updateNotification(msg)
     )
     setTimeout(() => {
-      if (props.notifications[0].content === msg) {
-        console.log('timeout after 5s')
-        props.store.dispatch(
-          updateNotification('')
-        )
-      } else {
-        console.log('the notification had already changed')
-      }
+      props.dispatch(
+        updateNotification('')
+      )
     }, 5000)
   }
   return (
@@ -54,7 +49,8 @@ const mapStateToProps = (state) => {
   console.log('AnecdoteList state to props, state:', state)
   return {
     anecdotes: state.anecdotes,
-    filter: state.filter
+    filter: state.filter,
+    notifications: state.notifications
   }
 }
 
