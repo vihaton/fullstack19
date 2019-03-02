@@ -15,11 +15,7 @@ const AnecdoteForm = (props) => {
       props.createAnecdote(content)
   
       const msg = `you have created anecdote: '${content}'`
-      props.updateNotification(msg)
-
-      setTimeout(() => {
-        props.updateNotification('')
-      }, 5000)
+      props.updateNotification(msg, 5)
   }
   return (
     <div>

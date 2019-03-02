@@ -12,11 +12,7 @@ const AnecdoteList = (props) => {
     props.vote(anecdote)
 
     const msg = `you have voted '${anecdote.content}'`
-    props.updateNotification(msg)
-
-    setTimeout(() => {
-      props.updateNotification('')
-    }, 5000)
+    props.updateNotification(msg, 2)
   }
   return (
     <div>
