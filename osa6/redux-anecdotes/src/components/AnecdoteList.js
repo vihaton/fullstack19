@@ -9,8 +9,7 @@ const AnecdoteList = (props) => {
   const anecdotes = props.anecdotes
 
   const handleVote = (anecdote) => {
-    console.log('vote', anecdote.id)
-    props.vote(anecdote.id)
+    props.vote(anecdote)
 
     const msg = `you have voted '${anecdote.content}'`
     props.updateNotification(msg)
