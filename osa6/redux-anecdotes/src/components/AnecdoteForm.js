@@ -4,22 +4,23 @@ import {
   createAnecdote
 } from '../reducers/anecdoteReducer'
 import { updateNotification } from "../reducers/notificationReducer";
+import anecdoteService from "../services/anecdotes";
 
 const AnecdoteForm = (props) => {
-  const addAnecdote = (event) => {
+  const addAnecdote = async (event) => {
       event.preventDefault()
-      props.dispatch(
-        createAnecdote(event.target.anecdote.value)
-      )
-      const msg = `you have created anecdote: '${event.target.anecdote.value}'`
+      
+      const content = event.target.anecdote.value
       event.target.anecdote.value = ''
-      props.dispatch(
-        updateNotification(msg)
-      )
+
+      const newDote = await anecdoteService.createNew(content)
+      props.createAnecdote(newDote.content)
+  
+      const msg = `you have created anecdote: '${newDote.content}'`
+      props.updateNotification(msg)
+
       setTimeout(() => {
-        props.dispatch(
-          updateNotification('')
-        )
+        props.updateNotification('')
       }, 5000)
   }
   return (
@@ -33,4 +34,4 @@ const AnecdoteForm = (props) => {
   )
 }
 
-export default connect()(AnecdoteForm)
+export default connect(null, { createAnecdote, updateNotification })(AnecdoteForm)

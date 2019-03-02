@@ -19,8 +19,6 @@ const Notification = (props) => {
 }
 
 const mapStateToProps = (state) => {
-  // joskus on hyödyllistä tulostaa mapStateToProps:ista...
-  console.log('Notification state to props, state:', state)
   return {
     notifications: state.notifications
   }
