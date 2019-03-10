@@ -2,10 +2,9 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
   BrowserRouter as Router,
-  Route, //Link, Redirect, withRouter
+  Route, Link, //Redirect, withRouter
 } from 'react-router-dom'
-
-import './index.css'
+import { Menu } from 'semantic-ui-react'
 
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
@@ -60,31 +59,35 @@ const App = (props) => {
 
   return (
     <Container>
-      <Notification />
-
-      <h2>Login</h2>
-
-      <Togglable buttonLabel='login'>
-        <LoginForm
-          username={removeReset(username)} password={removeReset(password)} />
-      </Togglable>
-
-      <div>
-        <h2>blogs</h2>
-
-        {user.logged.username ?
+      <Router>
+        <div>
           <div>
+            <Menu inverted>
+              <Menu.Item link>
+                <Link to="/">blogs</Link>
+              </Menu.Item>
+              <Menu.Item link>
+                <Link to="/users">users</Link>
+              </Menu.Item>
+              <Menu.Item link>
+                {user.logged
+                  ? <em>{user.logged.username} logged in
+                    <button onClick={handleLogout}>logout</button>
+                  </em>
+                  : <Link to="/login">login</Link>
+                }
+              </Menu.Item>
+            </Menu>
+          </div>
+          <Notification />
 
-            <div className='blogs'>
-              <p>{user.name} logged in</p>
-              <button onClick={handleLogout}>
-                logout
-              </button>
-            </div>
+          <div>
+            <h2>blogs</h2>
 
-            <Router>
-              <div>
-                <Route exact path="/" render={() => {
+            <div>
+              <Route exact path='/' render={() => {
+                if (user.logged.username) {
+
                   return (
                     <div>
                       <Togglable buttonLabel='new blog'>
@@ -97,17 +100,27 @@ const App = (props) => {
                       <BlogList />
                     </div>
                   )
-                }} />
-                <Route path='/users' render={() => <Users />} />
+                } else {
+                  return (
+                    <LoginForm
+                      username={removeReset(username)} password={removeReset(password)} />
+                  )
+                }
+              }} />
+              <Route path='/users' render={() => <Users />} />
+              <Route path='/login' render={() => <div>
+                <h2>Login</h2>
 
-              </div>
-            </Router>
+                <Togglable buttonLabel='login'>
+                  <LoginForm
+                    username={removeReset(username)} password={removeReset(password)} />
+                </Togglable>
+              </div>} />
+            </div>
           </div>
-          : ''
-        }
-      </div>
-
-    </Container>
+        </div>
+      </Router>
+    </Container >
   )
 }
 

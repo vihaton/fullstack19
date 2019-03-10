@@ -27,7 +27,7 @@ const BlogForm = (props) => {
 
       //to fetch the user object that is attached to the new blog
       props.initBlogs()
-     
+
       // title.reset()
       // author.reset()
       // url.reset()
