@@ -1,39 +1,48 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+
 import './index.css'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+
+import Blog from './components/Blog'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
+
 import { useField } from './hooks'
 
-const Notification = ({ message }) => {
-  if (!message) {
-    return null
-  } else if (message[0] === 'E') {
-    return (
-      <div className='error'>
-        {message}
-      </div>
-    )
-  }
+import { updateNotification } from './reducers/notificationReducer'
+import { initBlogs } from './reducers/blogsReducer'
 
-  return (
-    <div className='notification'>
-      {message}
-    </div>
-  )
-}
+// const Notification = ({ message }) => {
+//   if (!message) {
+//     return null
+//   } else if (message[0] === 'E') {
+//     return (
+//       <div className='error'>
+//         {message}
+//       </div>
+//     )
+//   }
+
+//   return (
+//     <div className='notification'>
+//       {message}
+//     </div>
+//   )
+// }
 
 const removeReset = state => {
   const { reset, ...cleanState } = state
   return (cleanState)
 }
 
-const App = () => {
+const App = (props) => {
+  console.log('props @ app', props)
   const [blogs, setBlogs] = useState( [] )
-  const [notification, setNotification] = useState(null)
+  // const [notification, setNotification] = useState(null)
   const [user, setUser] = useState(null)
 
   const username = useField('text')
@@ -58,12 +67,12 @@ const App = () => {
     }
   }, [])
 
-  const notify = msg => {
-    setNotification(msg)
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
-  }
+  // const notify = msg => {
+  //   setNotification(msg)
+  //   setTimeout(() => {
+  //     setNotification(null)
+  //   }, 5000)
+  // }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -72,7 +81,7 @@ const App = () => {
         username, password,
       })
 
-      console.log('logged in as user', user)
+      props.updateNotification(`logged in as ${user.name}`, 3)
 
       window.localStorage.setItem(
         'loggedBlogAppUser', JSON.stringify(user)
@@ -83,7 +92,7 @@ const App = () => {
       username.reset()
       password.reset()
     } catch (exception) {
-      notify('ERROR käyttäjätunnus tai salasana virheellinen')
+      props.updateNotification('ERROR käyttäjätunnus tai salasana virheellinen', 5)
     }
   }
 
@@ -92,7 +101,7 @@ const App = () => {
       window.localStorage.removeItem('loggedBlogAppUser')
       window.location.reload()
     } catch (exception) {
-      notify('ERROR uloskirjautummisessa ongelmia')
+      props.updateNotification('ERROR uloskirjautummisessa ongelmia', 5)
     }
   }
 
@@ -131,11 +140,11 @@ const App = () => {
       title.reset()
       author.reset()
       url.reset()
-      notify(`a new blog ${data.title} by ${data.author} was added`)
+      props.updateNotification(`a new blog ${data.title} by ${data.author} was added`, 5)
 
     } catch (error) {
       console.log('error @ adding a new blog', error.response.data.error)
-      notify(`ERROR: ${error.response.data.error}`)
+      props.updateNotification(`ERROR: ${error.response.data.error}`, 5)
     }
   }
 
@@ -151,7 +160,7 @@ const App = () => {
 
   return (
     <div className='app'>
-      <Notification message={notification} />
+      <Notification />
 
       <h2>Login</h2>
 
@@ -193,4 +202,4 @@ const App = () => {
   )
 }
 
-export default App
+export default connect(null, { initBlogs, updateNotification })(App)

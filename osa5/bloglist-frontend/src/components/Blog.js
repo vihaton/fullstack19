@@ -20,7 +20,7 @@ const Blog = ({ blog, handleLike, removeBlog, user }) => {
     setVisible(!visible)
   }
 
-  console.log('render blog', blog)
+  // console.log('render blog', blog)
 
   return (
     <div style={blogStyle}>
