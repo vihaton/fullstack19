@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+import {
+  BrowserRouter as Router,
+  Route, //Link, Redirect, withRouter
+} from 'react-router-dom'
 
 import './index.css'
 
@@ -8,12 +12,16 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
 import Notification from './components/Notification'
+import Users from './components/Users'
+
+import userService from './services/users'
 
 import { useField } from './hooks'
 
 import { updateNotification } from './reducers/notificationReducer'
 import { initBlogs } from './reducers/blogsReducer'
-import { checkForLogin, logout } from './reducers/userReducer'
+import { checkForLogin, logout, initUsers } from './reducers/userReducer'
+import { Container } from 'semantic-ui-react'
 
 const removeReset = state => {
   const { reset, ...cleanState } = state
@@ -32,6 +40,7 @@ const App = (props) => {
 
   useEffect(() => {
     props.initBlogs()
+    userService.getAll().then(users => props.initUsers(users))
   }, [])
 
   useEffect(() => {
@@ -50,7 +59,7 @@ const App = (props) => {
   }
 
   return (
-    <div className='app'>
+    <Container>
       <Notification />
 
       <h2>Login</h2>
@@ -63,27 +72,42 @@ const App = (props) => {
       <div>
         <h2>blogs</h2>
 
-        {user.username ?
-          <div className='blogs'>
-            <p>{user.name} logged in</p>
-            <button onClick={handleLogout}>
-              logout
-            </button>
+        {user.logged.username ?
+          <div>
 
-            <Togglable buttonLabel='new blog'>
-              <BlogForm
-                title={removeReset(title)}
-                author={removeReset(author)}
-                url={removeReset(url)} />
-            </Togglable>
+            <div className='blogs'>
+              <p>{user.name} logged in</p>
+              <button onClick={handleLogout}>
+                logout
+              </button>
+            </div>
 
-            <BlogList />
+            <Router>
+              <div>
+                <Route exact path="/" render={() => {
+                  return (
+                    <div>
+                      <Togglable buttonLabel='new blog'>
+                        <BlogForm
+                          title={removeReset(title)}
+                          author={removeReset(author)}
+                          url={removeReset(url)} />
+                      </Togglable>
+
+                      <BlogList />
+                    </div>
+                  )
+                }} />
+                <Route path='/users' render={() => <Users />} />
+
+              </div>
+            </Router>
           </div>
           : ''
         }
       </div>
 
-    </div>
+    </Container>
   )
 }
 
@@ -94,4 +118,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, { checkForLogin, initBlogs, updateNotification })(App)
+export default connect(mapStateToProps, { checkForLogin, initBlogs, initUsers, updateNotification })(App)
