@@ -20,3 +20,7 @@ root
   * bloglist-frontend
   * custom-hooks
 * osa 6
+  * redux-anecdotes
+  * unicafe-redux
+* osa 7
+  * routed-anecdotes
